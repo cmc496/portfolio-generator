@@ -1,4 +1,6 @@
 const inquirer = require('inquirer');
+const fs = require('fs');
+const generatePage = require('./src/page-template');
 
 const promptUser = () => {
 return inquirer
@@ -133,16 +135,52 @@ const promptProject = portfolioData => {
 promptUser()
     .then(promptProject)
     .then(portfolioData => {
-        console.log(portfolioData);
+        const pageHTML = generatePage(portfolioData);
+
+        fs.writeFile('./index.html', pageHTML, err => {
+            if (err) throw err;
+
+            console.log('Page created! Check out index.html in this directory to see it!');
+        });
     });
-
-// const fs = require('fs');
-// const generatePage = require('./src/page-template.js');
-
-// const pageHTML = generatePage(name, github);
-
-// fs.writeFile('./index.html', pageHTML, err => {
-//     if (err) throw err;
-
-//     console.log('Portfolio complete! Check out index.html to see the output!');
-// });
+const mockData = {
+    name: 'Cait',
+    github: 'cmc496',
+    confirmAbout: true,
+    about: 'aboutdata',
+    projects: [
+        {
+            name: 'Run Buddy',
+            description: 'Run Buddy application',
+            languages: ['HTML', 'CSS'],
+            link: 'https://github.com/cmc496/run-buddy',
+            feature: true,
+            confirmAddProject: true
+        },
+        {
+            name: 'Taskinator',
+            description: 'Task application',
+            languages: ['JavaScript', 'HTML', 'CSS'],
+            link: 'https://github.com/cmc496/taskinator',
+            feature: true,
+            confirmAddProject: true
+        },
+        {
+            name: 'Taskmaster Pro',
+            description: 'Advanced task application',
+            languages: ['JavaScript', 'jQuery', 'CSS', 'HTML', 'Bootstrap'],
+            link: 'https://github.com/cmc496/taskmaster-pro',
+            feature: false,
+            confirmAddProject: true
+        },
+        {
+            name: 'Robot Gladiators',
+            description: 'Robot gladiator game',
+            languages: ['JavaScript'],
+            link: 'https://github.com/cmc496/robot-gladiators',
+            feature: false,
+            confirmAddProject: false
+        }
+    ]
+};
+const pageHTML = generatePage(mockData);
